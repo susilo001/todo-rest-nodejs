@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    container_name: web
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - ./nginx/nginx.conf:/etc/nginx/conf.d
+      - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DBNAME=test
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+  db:
+    image: mysql:latest
+    container_name: db
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=xxxx
+      - MYSQL_PASSWORD=xxxx
+      - MYSQL_ROOT_PASSWORD=root
+volumes:
+  db:
