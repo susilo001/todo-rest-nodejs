@@ -13,18 +13,17 @@ Before you start, ensure you have the following installed:
 ### Getting Started
 
 1. Clone this repository to your local machine:
-
-   ```bash
+ ```bash
    git clone https://github.com/yourusername/todo-app.git
-   ```
-
+ ```
 2.cd todo-app
-
+```bash
+cd todo-app
+```
 3.docker-compose up
-
-4.npm install
-
-5.npm start
+```bash
+docker-compose up --build
+```
 You can access the app at <http://localhost:3000> in your browser.
 
 ### Usage
