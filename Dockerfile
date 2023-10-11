@@ -28,7 +28,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY . /app
 
 # Expose the port that your application will listen on
-EXPOSE 3000
+EXPOSE 3030
 
 # Use the entrypoint script as the command to run when the container starts
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
