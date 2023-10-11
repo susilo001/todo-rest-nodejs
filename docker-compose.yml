@@ -1,5 +1,15 @@
 version: "3.9"
 services:
+  db:
+    image: mysql:8.0
+    container_name: db
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=todo4
   web:
     build: .
     container_name: web
@@ -12,18 +22,10 @@ services:
     environment:
       - MYSQL_HOST=db
       - MYSQL_PORT=3306
-      - MYSQL_DBNAME=test
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
-  db:
-    image: mysql:latest
-    container_name: db
-    volumes:
-      - db:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=test
-      - MYSQL_USER=xxxx
-      - MYSQL_PASSWORD=xxxx
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DBNAME=todo4
+    depends_on:
+      - db
 volumes:
-  db:
+  data:
