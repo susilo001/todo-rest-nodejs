@@ -1,5 +1,7 @@
 # Todo App
 
+This is a simple todo app built with Node.js, Express, and MySQL. It is a RESTful API that allows you to create, read, update, and delete todo items.
+
 ## Prerequisites
 
 Before you start, ensure you have the following installed:
@@ -13,7 +15,7 @@ Before you start, ensure you have the following installed:
 1. Clone this repository to your local machine:
 
 ```bash
-  gh repo clone susilo001/todo-rest-nodejs
+gh repo clone susilo001/todo-rest-nodejs
 ```
 
 2.cd todo-app
@@ -35,11 +37,3 @@ docker-compose up --build
 ```
 
 You can access the app at <http://localhost:3030> in your browser.
-
-### Usage
-
-To add a new task, click on the "Add Task" button and fill in the task details.
-To mark a task as completed, click the checkbox next to the task.
-To delete a task, click the "Delete" button associated with the task.
-Database Configuration
-The app uses a MySQL database to store todo items. You can configure the database connection in the docker-compose.yml file and the Node.js application's environment variables in the .env file.
