@@ -1,4 +1,6 @@
-const Todo = require("../models/todo.model");
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 const sendResponse = (res, code, status, message, data = {}) => {
   res.status(code).send({ status, message, data });
@@ -16,16 +18,12 @@ const handleNotFoundError = (res, resourceName, resourceId) => {
 exports.index = async (req, res) => {
   try {
     if (req.query.activity_group_id) {
-      const todos = await Todo.findAll({
-        where: {
-          activity_group_id: {
-            [Op.eq]: req.query.activity_group_id,
-          },
-        },
+      const todos = await prisma.todos.findMany({
+        where: { activity_group_id: req.query.activity_group_id },
       });
       sendResponse(res, 200, "Success", "Success", todos);
     } else {
-      const todos = await Todo.findAll();
+      const todos = await prisma.todos.findMany();
       sendResponse(res, 200, "Success", "Success", todos);
     }
   } catch (error) {
@@ -35,7 +33,9 @@ exports.index = async (req, res) => {
 
 exports.show = async (req, res) => {
   try {
-    const todo = await Todo.find(req.params.id);
+    const todo = await prisma.todos.findUnique({
+      where: { id: req.params.id },
+    });
     if (!todo) {
       handleNotFoundError(res, "Todo", req.params.id);
     } else {
@@ -55,7 +55,7 @@ exports.create = async (req, res) => {
       const message = `${missingFields.join(", ")} cannot be null`;
       sendResponse(res, 400, "Bad Request", message);
     } else {
-      const todo = await Todo.create(req.body);
+      const todo = await prisma.todos.create({ data: req.body });
       sendResponse(res, 201, "Success", "Success", todo);
     }
   } catch (error) {
@@ -65,19 +65,24 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const todo = await Todo.find(req.params.id);
+    const todo = await prisma.todos.findUnique({
+      where: { id: req.params.id },
+    });
     if (!todo) {
       handleNotFoundError(res, "Todo", req.params.id);
     } else if (!req.body) {
       sendResponse(res, 400, "Bad Request", "title cannot be null");
     } else {
-      await Todo.update(req.body, { where: { id: req.params.id } });
+      await prisma.todos.update({
+        where: { id: req.params.id },
+        data: req.body,
+      });
       sendResponse(
         res,
         200,
         "Success",
         "Success",
-        await Todo.find(req.params.id)
+        await prisma.todos.findUnique({ where: { id: req.params.id } })
       );
     }
   } catch (error) {
@@ -87,11 +92,13 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const todo = await Todo.find(req.params.id);
+    const todo = await prisma.todos.findUnique({
+      where: { id: req.params.id },
+    });
     if (!todo) {
       handleNotFoundError(res, "Todo", req.params.id);
     } else {
-      await Todo.destroy({ where: { id: req.params.id } });
+      await prisma.todos.delete({ where: { id: req.params.id } });
       sendResponse(res, 200, "Success", "Success", {});
     }
   } catch (error) {

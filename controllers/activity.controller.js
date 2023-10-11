@@ -1,4 +1,6 @@
-const Activity = require("../models/activity.model");
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 const sendResponse = (res, code, status, message, data = {}) => {
   res.status(code).send({ status, message, data });
@@ -6,7 +8,8 @@ const sendResponse = (res, code, status, message, data = {}) => {
 
 exports.index = async (req, res) => {
   try {
-    const activities = await Activity.findAll();
+    const activities = await prisma.activities.findMany();
+
     sendResponse(res, 200, "Success", "Success", activities);
   } catch (error) {
     sendResponse(res, 500, "Internal Server Error", error.message);
@@ -18,8 +21,7 @@ exports.create = async (req, res) => {
     if (!req.body.title) {
       sendResponse(res, 400, "Bad Request", "title cannot be null");
     } else {
-      const newActivity = new Activity(req.body);
-      const activity = await newActivity.save();
+      const activity = await prisma.activities.create({ data: req.body });
       sendResponse(res, 201, "Success", "Success", activity);
     }
   } catch (error) {
@@ -29,7 +31,10 @@ exports.create = async (req, res) => {
 
 exports.show = async (req, res) => {
   try {
-    const activity = await Activity.findById(req.params.id);
+    const activity = await prisma.activities.findUnique({
+      where: { id: req.params.id },
+    });
+
     if (!activity) {
       sendResponse(
         res,
@@ -47,7 +52,9 @@ exports.show = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const activity = await Activity.findById(req.params.id);
+    const activity = await prisma.activities.findUnique({
+      where: { id: req.params.id },
+    });
     if (!activity) {
       sendResponse(
         res,
@@ -58,15 +65,16 @@ exports.update = async (req, res) => {
     } else if (!req.body) {
       sendResponse(res, 400, "Bad Request", "title cannot be null");
     } else {
-      await Activity.update(req.body, {
+      await prisma.activities.update({
         where: { id: req.params.id },
+        data: req.body,
       });
       sendResponse(
         res,
         200,
         "Success",
         "Success",
-        await Activity.findByPk(req.params.id)
+        await prisma.activities.findUnique({ where: { id: req.params.id } })
       );
     }
   } catch (error) {
@@ -76,7 +84,9 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const activity = await Activity.findById(req.params.id);
+    const activity = await prisma.activities.findUnique({
+      where: { id: req.params.id },
+    });
     if (!activity) {
       sendResponse(
         res,
@@ -85,7 +95,7 @@ exports.delete = async (req, res) => {
         `Activity with ID ${req.params.id} Not Found`
       );
     } else {
-      await Activity.destroy({ where: { id: req.params.id } });
+      await prisma.activities.delete({ where: { id: req.params.id } });
       sendResponse(res, 200, "Success", "Success", {});
     }
   } catch (error) {
