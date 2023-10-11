@@ -17,9 +17,10 @@ const handleNotFoundError = (res, resourceName, resourceId) => {
 
 exports.index = async (req, res) => {
   try {
-    if (req.query.activity_group_id) {
+    const activityId = parseInt(req.query.activity_group_id);
+    if (activityId) {
       const todos = await prisma.todos.findMany({
-        where: { activity_group_id: req.query.activity_group_id },
+        where: { activity_group_id: activityId },
       });
       sendResponse(res, 200, "Success", "Success", todos);
     } else {
@@ -33,11 +34,12 @@ exports.index = async (req, res) => {
 
 exports.show = async (req, res) => {
   try {
+    const todoId = parseInt(req.params.id);
     const todo = await prisma.todos.findUnique({
-      where: { id: req.params.id },
+      where: { id: todoId },
     });
     if (!todo) {
-      handleNotFoundError(res, "Todo", req.params.id);
+      handleNotFoundError(res, "Todo", todoId);
     } else {
       sendResponse(res, 200, "Success", "Success", todo);
     }
@@ -65,16 +67,17 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    const todoId = parseInt(req.params.id);
     const todo = await prisma.todos.findUnique({
-      where: { id: req.params.id },
+      where: { id: todoId },
     });
     if (!todo) {
-      handleNotFoundError(res, "Todo", req.params.id);
+      handleNotFoundError(res, "Todo", todoId);
     } else if (!req.body) {
       sendResponse(res, 400, "Bad Request", "title cannot be null");
     } else {
       await prisma.todos.update({
-        where: { id: req.params.id },
+        where: { id: todoId },
         data: req.body,
       });
       sendResponse(
@@ -82,7 +85,7 @@ exports.update = async (req, res) => {
         200,
         "Success",
         "Success",
-        await prisma.todos.findUnique({ where: { id: req.params.id } })
+        await prisma.todos.findUnique({ where: { id: todoId } })
       );
     }
   } catch (error) {
@@ -92,13 +95,14 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
+    const todoId = parseInt(req.params.id);
     const todo = await prisma.todos.findUnique({
-      where: { id: req.params.id },
+      where: { id: todoId },
     });
     if (!todo) {
-      handleNotFoundError(res, "Todo", req.params.id);
+      handleNotFoundError(res, "Todo", todoId);
     } else {
-      await prisma.todos.delete({ where: { id: req.params.id } });
+      await prisma.todos.delete({ where: { id: todoId } });
       sendResponse(res, 200, "Success", "Success", {});
     }
   } catch (error) {

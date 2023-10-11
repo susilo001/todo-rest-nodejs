@@ -7,7 +7,9 @@ router.get("/", (req, res) => {
   res.send("Welcome to the API");
 });
 
-// Todo Routes
+/**
+ * Todo Routes
+ */
 router
   .route("/todo-items")
   .get(todoController.index)
@@ -19,7 +21,9 @@ router
   .patch(todoController.update)
   .delete(todoController.delete);
 
-// Activity Routes
+/**
+ * Activity Routes
+ */
 router
   .route("/activity-groups")
   .get(activityController.index)
