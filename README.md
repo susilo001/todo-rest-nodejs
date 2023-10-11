@@ -13,16 +13,22 @@ Before you start, ensure you have the following installed:
 1. Clone this repository to your local machine:
 
 ```bash
-  git clone https://github.com/yourusername/todo-app.git
+  gh repo clone susilo001/todo-rest-nodejs
 ```
 
 2.cd todo-app
 
 ```bash
-cd todo-app
+cd todo-rest-nodejs
 ```
 
-3.docker-compose up
+3.copy .env.example to .env
+
+```bash
+cp .env.example .env
+```
+
+4.docker-compose up
 
 ```bash
 docker-compose up --build
