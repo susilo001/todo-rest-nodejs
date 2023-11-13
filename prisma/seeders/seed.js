@@ -18,7 +18,7 @@ async function seedTodos() {
   console.log(`Created ${createdTodos.count} todos`);
 }
 
-async function main() {
+(async () => {
   try {
     console.log(`Start seeding ...`);
     await Promise.all([seedActivities(), seedTodos()]);
@@ -28,6 +28,4 @@ async function main() {
   } finally {
     await prisma.$disconnect();
   }
-}
-
-main();
+})();

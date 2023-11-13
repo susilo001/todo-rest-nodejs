@@ -31,4 +31,6 @@ COPY . /app
 EXPOSE 3030
 
 # Use the entrypoint script as the command to run when the container starts
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+CMD [ "npx", "pm2", "start", "app.js", "--no-daemon" ]
